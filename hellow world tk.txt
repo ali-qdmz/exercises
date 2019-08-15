@@ -1,0 +1,17 @@
+import tkinter
+from tkinter import messagebox
+root = tkinter.Tk()
+
+
+#size of the window
+root.geometry("50x500")
+
+
+ 
+def helloCallBack():
+   messagebox.showinfo( "Hello Python", "Hello World")
+   messagebox.showwarning("car","ffff")
+B = tkinter.Button(root, text ="Hello", command = helloCallBack)
+B.place(x = 10,y = 100)
+
+root.mainloop()
