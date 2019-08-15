@@ -1,0 +1,149 @@
+class teacher:
+    def __init__(self,i="",f="",l="",h=0,p=0):
+        self.id = i
+        self.firstname = f
+        self.lastname = l
+        self.hour = h
+        self.payperhour = p
+    def getID(self):
+        return self.id
+    def setID(self,value):
+        self.id = value
+    def setFirstName(self,value):
+        self.firstname = value
+    def setLastName(self,value):
+        self.lastname = value
+    def getLastName(self,value):
+        return self.getlastname
+    def getFirstName(self,value):
+        return self.firstname
+    def getHour(self):
+        return self.hour
+    def setHour(self,value):
+        if value > 0:
+            self.hour = value
+        else:
+            self.hour = 0
+    def payperonhour(self):
+        return self.payperhour
+    def setpayperhour(self,value):
+        if value > 0:
+            self.payperhour = value
+        else:
+            self.payperhour = 0
+    def payment(self):
+        return str((float(self.hour) * float(self.payperhour)))
+    def __str__(self):
+        return str(self.id) + "   " + str(self.firstname) + "     " + str(self.lastname) + "     " + str(self.hour) + "    " + str(self.payperhour) + "    "+ str(self.payment())
+
+try:
+    import mysql.connector
+
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    passwd=""
+    )
+
+    mycursor = mydb.cursor()
+
+    mycursor.execute("CREATE DATABASE teacher")
+    mycursor.close()
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    passwd="",
+    database="teacher"
+    )
+
+    mycursor = mydb.cursor()
+
+    mycursor.execute("CREATE TABLE customers (firstname VARCHAR(255), lastname VARCHAR(255), ids VARCHAR(255), payperhour VARCHAR(255), teachhour VARCHAR(255), totalpay VARCHAR(255))")
+    mycursor.execute("ALTER TABLE customers ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY") 
+
+    mycursor.close()
+except:
+    print('database exists')
+
+
+
+from tkinter import *
+
+
+
+def show_entry_fields():
+    x = teacher(e1.get(),e2.get(),e3.get(),e4.get(),e5.get())
+    print(x)
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    passwd="",
+    database="teacher"
+    )
+
+    mycursor = mydb.cursor()
+
+    sql = "INSERT INTO customers (firstname, lastname, ids, payperhour, teachhour, totalpay) VALUES (%s, %s, %s, %s, %s, %s)"
+    val = (str(x.id),x.firstname ,x.lastname,x.payperhour,x.hour,x.payment())
+    mycursor.execute(sql, val)
+
+    mydb.commit()
+
+    print(mycursor.rowcount, "record inserted.")
+    mydb.close()
+
+
+def search():
+    import mysql.connector
+
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    passwd="",
+    database="teacher"
+    )
+
+    mycursor = mydb.cursor()
+
+    
+    
+    mycursor.execute("SELECT * from customers WHERE id = " + "(" +",".join(e6.get()) + ")")
+    myresult = mycursor.fetchall()
+
+    for x in myresult:
+        print(x)
+    mydb.close()
+
+    
+master = Tk()
+master.geometry("500x500")
+Label(master, text="First Name").grid(row=0)
+Label(master, text="Last Name").grid(row=1)
+Label(master, text="Id").grid(row=2)
+Label(master, text="teach hour").grid(row=3)
+Label(master, text="pay per hour").grid(row=4)
+
+e1 = Entry(master)
+e2 = Entry(master)
+e3 = Entry(master)
+e4 = Entry(master)
+e5 = Entry(master)
+
+e6 = Entry(master)
+e1.grid(row=0, column=1)
+e2.grid(row=1, column=1)
+e3.grid(row=2, column=1)
+e4.grid(row=3, column=1)
+e5.grid(row=4, column=1)
+
+e6.grid(row=5, column=1)
+
+Button(master, text='Quit', command=master.destroy).grid(row=10, column=0, sticky=W, pady=4)
+Button(master, text='Show', command=show_entry_fields).grid(row=10, column=1, sticky=W, pady=4)
+Button(master, text='search', command=search).grid(row=11, column=1, sticky=W, pady=4)
+
+
+mainloop( )
+    
+        
+    
